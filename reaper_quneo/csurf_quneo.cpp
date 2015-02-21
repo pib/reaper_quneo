@@ -407,7 +407,7 @@ static HWND configFunc(const char *type_string, HWND parent, const char *initCon
 reaper_csurf_reg_t csurf_quneo_reg = 
 {
   "Quneo",
-  "Kieth McMillan Quneo (using preset 1)",
+  "Keith McMillen Quneo (using preset 1)",
   createFunc,
   configFunc,
 };
