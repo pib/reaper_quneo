@@ -29,6 +29,8 @@ int (*CSurf_TrackToID)(MediaTrack *track, bool mcpView);
 MediaTrack *(*CSurf_TrackFromID)(int idx, bool mcpView);
 int (*CSurf_NumTracks)(bool mcpView);
 
+void(*ShowConsoleMsg)(const char* msg);
+
     // these will be called from app when something changes
 void (*CSurf_SetTrackListChange)();
 void (*CSurf_SetSurfaceVolume)(MediaTrack *trackid, double volume, IReaperControlSurface *ignoresurf);
@@ -207,6 +209,8 @@ REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_HINSTANCE hI
   IMPAPI(TrackFX_GetFXName)
   
   IMPAPI(GetTrackGUID)
+
+  IMPAPI(ShowConsoleMsg)
   
   void * (*get_config_var)(const char *name, int *szout); 
   int (*projectconfig_var_getoffs)(const char *name, int *szout);

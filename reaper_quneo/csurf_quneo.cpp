@@ -9,6 +9,9 @@
 
 #include "csurf.h"
 
+#define MINUSINF -90.0
+
+char debug[64];
 static bool g_csurf_mcpmode=false; // we may wish to allow an action to set this
 
 static double charToVol(unsigned char val)
@@ -26,6 +29,16 @@ static  unsigned char volToChar(double vol)
   else if (d>127.0)d=127.0;
 
   return (unsigned char)(d+0.5);
+}
+
+static  unsigned char peakToChar(double vol)
+{
+  double d = (DB2SLIDER(VAL2DB(vol))*127.0 / 1000.0);
+  if (d<0.0)d = 0.0;
+  if (d > 10.0) d *= 1.2;
+  else if (d>127.0)d = 127.0;
+
+  return (unsigned char)(d + 0.5);
 }
 
 static double charToPan(unsigned char val)
@@ -48,7 +61,22 @@ static unsigned char panToChar(double pan)
   return (unsigned char)(pan+0.5);
 }
 
+unsigned char Cnv_DBToEncoder(double value)
+{
+  if (value > MINUSINF) value = ((MINUSINF - value) / MINUSINF * 15.0) + 0.5;
+  else value = 0.0;
 
+  if (value > 15.0) value = 15.0;
+
+  return char(value);
+} //Cnv_DBToEncoder
+
+unsigned char Cnv_PeakToEncoder(double value)
+{
+  double new_val = VAL2DB(value);
+
+  return Cnv_DBToEncoder(new_val);
+} // Cnv_PeakToEncoder
 
 
 class CSurf_Quneo : public IReaperControlSurface
@@ -66,16 +94,17 @@ class CSurf_Quneo : public IReaperControlSurface
 
     int m_vol_lastpos[256];
     int m_pan_lastpos[256];
+    char peak_last[256];
 
     void OnMIDIEvent(MIDI_event_t *evt)
     {
       if ((evt->midi_message[0] & 0xf0) == 0x90)
       {
         if (evt->midi_message[1] == 0x1a) CSurf_OnPlay();
-        else if (evt->midi_message[1] == 0x19) CSurf_OnStop();
         else if (evt->midi_message[1] == 0x18) CSurf_OnRecord();
+        else if (evt->midi_message[1] == 0x19) CSurf_OnStop();
       }
-      else if ((evt->midi_message[0]&0xf0) == 0xB0)
+      else if (false && (evt->midi_message[0]&0xf0) == 0xB0)
       {
         int bank=evt->midi_message[0]&0xf;
 
@@ -146,6 +175,7 @@ public:
     memset(m_pan_lastpos,0xff,sizeof(m_pan_lastpos));
     memset(m_pan_lasttouch,0,sizeof(m_pan_lasttouch));
     memset(m_vol_lasttouch,0,sizeof(m_vol_lasttouch));
+    memset(peak_last, 0, sizeof(peak_last));
 
     //create midi hardware access
     m_midiin = m_midi_in_dev >= 0 ? CreateMIDIInput(m_midi_in_dev) : NULL;
@@ -200,6 +230,24 @@ public:
       MIDI_eventlist *list=m_midiin->GetReadBuf();
       MIDI_event_t *evts;
       while ((evts=list->EnumItems(&l))) OnMIDIEvent(evts);
+    }
+    if (m_midiout) {
+      int numtracks = CSurf_NumTracks(g_csurf_mcpmode);
+      for (int i = 0; i < 4 && i < numtracks; i++) {
+        MediaTrack *track = CSurf_TrackFromID(i, g_csurf_mcpmode);
+        double peak_l = Track_GetPeakInfo(track, 0);
+        double peak_r = Track_GetPeakInfo(track, 1);
+        double peak = (peak_l + peak_r) / 2;
+
+        unsigned char peak_out = peakToChar(peak);
+        m_midiout->Send(0xb0, i + 1, peak_out, -1);
+
+        //if (peak_out != peak_last[i]) {
+        //  sprintf(debug, "Track %d peak: %d", i, peak_out);
+        //  ShowConsoleMsg(debug);
+        //}
+        //peak_last[i] = peak_out;
+      }
     }
   }
 
@@ -262,8 +310,9 @@ public:
   { 
     if (m_midiout)
     {
-      m_midiout->Send(0xb0,0x59,play?0x7f:0,-1);
-      m_midiout->Send(0xb0,0x5a,pause?0x7f:0,-1);
+      m_midiout->Send(0x90, 0x22, pause || !play ? 0x7f : 0, -1);
+      m_midiout->Send(0x90, 0x23, play || pause ? 0x7f : 0, -1);
+      m_midiout->Send(0x90, 0x21, rec ? 0x7f : 0, -1);
     }
   }
   void SetRepeatState(bool rep) 
