@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
 
@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -27,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -52,46 +50,39 @@ END
 // Dialog
 //
 
-IDD_SURFACEEDIT_MCU DIALOG DISCARDABLE  0, 0, 268, 77
-STYLE DS_CENTER | WS_CHILD
+IDD_SURFACEEDIT_MCU DIALOG 0, 0, 268, 77
+STYLE DS_SETFONT | DS_CENTER | WS_CHILD
 FONT 8, "MS Shell Dlg"
 BEGIN
     RTEXT           "MIDI input:",IDC_STATIC,23,6,56,8
-    COMBOBOX        IDC_COMBO2,81,4,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,81,4,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT           "MIDI output:",IDC_STATIC,23,23,56,8
-    COMBOBOX        IDC_COMBO3,81,21,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_COMBO3,81,21,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT           "Surface offset (tracks):",IDC_EDIT1_LBL,4,42,72,8
     EDITTEXT        IDC_EDIT1,81,41,24,12,ES_AUTOHSCROLL
     RTEXT           "Size tweak:",IDC_EDIT2_LBL,30,58,47,8
     EDITTEXT        IDC_EDIT2,80,55,24,12,ES_AUTOHSCROLL
-    LTEXT           "(leave at 9 unless you know what you're doing)",
-                    IDC_EDIT2_LBL2,108,58,148,8
+    LTEXT           "(leave at 9 unless you know what you're doing)",IDC_EDIT2_LBL2,108,58,148,8
 END
 
-IDD_SURFACEEDIT_MCU1 DIALOG DISCARDABLE  0, 0, 268, 95
-STYLE DS_CENTER | WS_CHILD
+IDD_SURFACEEDIT_MCU1 DIALOG 0, 0, 268, 95
+STYLE DS_SETFONT | DS_CENTER | WS_CHILD
 FONT 8, "MS Shell Dlg"
 BEGIN
     RTEXT           "MIDI input:",IDC_STATIC,23,6,56,8
-    COMBOBOX        IDC_COMBO2,81,4,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_COMBO2,81,4,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT           "MIDI output:",IDC_STATIC,23,23,56,8
-    COMBOBOX        IDC_COMBO3,81,21,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
+    COMBOBOX        IDC_COMBO3,81,21,181,105,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     RTEXT           "Surface offset (tracks):",IDC_EDIT1_LBL,4,37,72,8
     EDITTEXT        IDC_EDIT1,81,36,24,12,ES_AUTOHSCROLL
     RTEXT           "Size tweak:",IDC_EDIT2_LBL,30,53,47,8
     EDITTEXT        IDC_EDIT2,80,50,24,12,ES_AUTOHSCROLL
-    LTEXT           "(leave at 9 unless you know what you're doing)",
-                    IDC_EDIT2_LBL2,108,52,148,8
-    CONTROL         "Ignore fader moves when fader is not being touched",
-                    IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,67,
-                    177,10
-    CONTROL         "Map F1-F8 to go to markers",IDC_CHECK2,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,4,78,102,10
+    LTEXT           "(leave at 9 unless you know what you're doing)",IDC_EDIT2_LBL2,108,52,148,8
+    CONTROL         "Ignore fader moves when fader is not being touched",IDC_CHECK1,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,67,177,10
+    CONTROL         "Map F1-F8 to go to markers",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,78,102,10
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -99,7 +90,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_SURFACEEDIT_MCU, DIALOG
     BEGIN
@@ -119,7 +110,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

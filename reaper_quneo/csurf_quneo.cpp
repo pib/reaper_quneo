@@ -69,7 +69,13 @@ class CSurf_Quneo : public IReaperControlSurface
 
     void OnMIDIEvent(MIDI_event_t *evt)
     {
-      if ((evt->midi_message[0]&0xf0) == 0xB0)
+      if ((evt->midi_message[0] & 0xf0) == 0x90)
+      {
+        if (evt->midi_message[1] == 0x1a) CSurf_OnPlay();
+        else if (evt->midi_message[1] == 0x19) CSurf_OnStop();
+        else if (evt->midi_message[1] == 0x18) CSurf_OnRecord();
+      }
+      else if ((evt->midi_message[0]&0xf0) == 0xB0)
       {
         int bank=evt->midi_message[0]&0xf;
 
@@ -111,8 +117,8 @@ class CSurf_Quneo : public IReaperControlSurface
           MediaTrack *tr=CSurf_TrackFromID(trackid,g_csurf_mcpmode);
           if (tr) CSurf_SetSurfacePan(tr,CSurf_OnPanChange(tr,charToPan(evt->midi_message[2]),false),this);
         }
-        else if (evt->midi_message[1] == 0x59) CSurf_OnPlay();
-        else if (evt->midi_message[1] == 0x5a) CSurf_OnStop();
+        else if (evt->midi_message[1] == 0x1a) CSurf_OnPlay();
+        else if (evt->midi_message[1] == 0x19) CSurf_OnStop();
         else if (evt->midi_message[1] == 0x5b) 
         {
           CSurf_OnRew(1);
@@ -162,10 +168,10 @@ public:
   }
 
 
-  const char *GetTypeString() { return "BCF2K"; }
+  const char *GetTypeString() { return "QUNEO"; }
   const char *GetDescString()
   {
-    descspace.Set("BCF 2000");
+    descspace.Set("QUNEO");
     char tmp[512];
     sprintf(tmp," (dev %d,%d)",m_midi_in_dev,m_midi_out_dev);
     descspace.Append(tmp);
