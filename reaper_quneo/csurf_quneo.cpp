@@ -8,6 +8,7 @@
 
 
 #include "csurf.h"
+#include "../reaper_plugin_functions.h"
 
 #define MINUSINF -90.0
 
@@ -60,24 +61,6 @@ static unsigned char panToChar(double pan)
 
   return (unsigned char)(pan+0.5);
 }
-
-unsigned char Cnv_DBToEncoder(double value)
-{
-  if (value > MINUSINF) value = ((MINUSINF - value) / MINUSINF * 15.0) + 0.5;
-  else value = 0.0;
-
-  if (value > 15.0) value = 15.0;
-
-  return char(value);
-} //Cnv_DBToEncoder
-
-unsigned char Cnv_PeakToEncoder(double value)
-{
-  double new_val = VAL2DB(value);
-
-  return Cnv_DBToEncoder(new_val);
-} // Cnv_PeakToEncoder
-
 
 class CSurf_Quneo : public IReaperControlSurface
 {
@@ -248,6 +231,9 @@ public:
         //}
         //peak_last[i] = peak_out;
       }
+
+      unsigned char play_position = ((unsigned int)(GetPlayPosition()*10.0)) % 128;
+      m_midiout->Send(0xb0, 6, play_position, -1);
     }
   }
 

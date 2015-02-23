@@ -255,6 +255,7 @@
   <ItemGroup>
     <ClInclude Include="..\peak_cache.h" />
     <ClInclude Include="..\reaper_plugin.h" />
+    <ClInclude Include="..\reaper_plugin_functions.h" />
     <ClInclude Include="csurf.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

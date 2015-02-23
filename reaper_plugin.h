@@ -1004,7 +1004,7 @@ typedef struct
 
 // note you can also add a control surface behind the scenes with "csurf_inst" (IReaperControlSurface*)instance
 
-
+typedef LRESULT(*screensetNewCallbackFunc)(int action, const char *id, void *param, void *actionParm, int actionParmSize);
 
 #ifndef UNDO_STATE_ALL
 #define UNDO_STATE_ALL 0xFFFFFFFF

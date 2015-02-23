@@ -4,239 +4,29 @@
 ** License: LGPL.
 */
 
-
 #include "csurf.h"
+#define REAPERAPI_IMPLEMENT
+#include "../reaper_plugin_functions.h"
 
 extern reaper_csurf_reg_t csurf_quneo_reg;
 
 REAPER_PLUGIN_HINSTANCE g_hInst; // used for dialogs, if any
 HWND g_hwnd;
 
-
-double (*DB2SLIDER)(double x);
-double (*SLIDER2DB)(double y);
-int (*GetNumMIDIInputs)(); 
-int (*GetNumMIDIOutputs)();
-midi_Input *(*CreateMIDIInput)(int dev);
-midi_Output *(*CreateMIDIOutput)(int dev, bool streamMode, int *msoffset100); 
-bool (*GetMIDIOutputName)(int dev, char *nameout, int nameoutlen);
-bool (*GetMIDIInputName)(int dev, char *nameout, int nameoutlen);
-
-void * (*projectconfig_var_addr)(void*proj, int idx);
-
-
-int (*CSurf_TrackToID)(MediaTrack *track, bool mcpView);
-MediaTrack *(*CSurf_TrackFromID)(int idx, bool mcpView);
-int (*CSurf_NumTracks)(bool mcpView);
-
-void(*ShowConsoleMsg)(const char* msg);
-
-    // these will be called from app when something changes
-void (*CSurf_SetTrackListChange)();
-void (*CSurf_SetSurfaceVolume)(MediaTrack *trackid, double volume, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetSurfacePan)(MediaTrack *trackid, double pan, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetSurfaceMute)(MediaTrack *trackid, bool mute, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetSurfaceSelected)(MediaTrack *trackid, bool selected, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetSurfaceSolo)(MediaTrack *trackid, bool solo, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetSurfaceRecArm)(MediaTrack *trackid, bool recarm, IReaperControlSurface *ignoresurf);
-bool (*CSurf_GetTouchState)(MediaTrack *trackid, int isPan);
-void (*CSurf_SetAutoMode)(int mode, IReaperControlSurface *ignoresurf);
-
-void (*CSurf_SetPlayState)(bool play, bool pause, bool rec, IReaperControlSurface *ignoresurf);
-void (*CSurf_SetRepeatState)(bool rep, IReaperControlSurface *ignoresurf);
-
-// these are called by our surfaces, and actually update the project
-double (*CSurf_OnVolumeChange)(MediaTrack *trackid, double volume, bool relative);
-double (*CSurf_OnPanChange)(MediaTrack *trackid, double pan, bool relative);
-bool (*CSurf_OnMuteChange)(MediaTrack *trackid, int mute);
-bool (*CSurf_OnSelectedChange)(MediaTrack *trackid, int selected);
-bool (*CSurf_OnSoloChange)(MediaTrack *trackid, int solo);
-bool (*CSurf_OnFXChange)(MediaTrack *trackid, int en);
-bool (*CSurf_OnRecArmChange)(MediaTrack *trackid, int recarm);
-void (*CSurf_OnPlay)();
-void (*CSurf_OnStop)();
-void (*CSurf_OnFwd)(int seekplay);
-void (*CSurf_OnRew)(int seekplay);
-void (*CSurf_OnRecord)();
-void (*CSurf_GoStart)();
-void (*CSurf_GoEnd)();
-void (*CSurf_OnArrow)(int whichdir, bool wantzoom);
-void (*CSurf_OnTrackSelection)(MediaTrack *trackid);
-void (*CSurf_ResetAllCachedVolPanStates)();
-void (*CSurf_ScrubAmt)(double amt);
-
-void (*kbd_OnMidiEvent)(MIDI_event_t *evt, int dev_index);
-void (*TrackList_UpdateAllExternalSurfaces)();
-int (*GetMasterMuteSoloFlags)();
-void (*ClearAllRecArmed)();
-void (*SetTrackAutomationMode)(MediaTrack *tr, int mode);
-int (*GetTrackAutomationMode)(MediaTrack *tr);
-void (*SoloAllTracks)(int solo); // solo=2 for SIP
-void (*MuteAllTracks)(bool mute);
-void (*BypassFxAllTracks)(int bypass); // -1 = bypass all if not all bypassed, otherwise unbypass all
-const char *(*GetTrackInfo)(INT_PTR track, int *flags); 
-void (*SetTrackSelected)(MediaTrack *tr, bool sel);
-void (*UpdateTimeline)(void);
-int (*GetPlayState)();
-double (*GetPlayPosition)();
-double (*GetCursorPosition)();
-int (*GetSetRepeat)(int val);
-
-void (*format_timestr_pos)(double tpos, char *buf, int buflen, int modeoverride); // modeoverride=-1 for proj
-void (*SetAutomationMode)(int mode, bool onlySel); // sets all or selected tracks
-void (*Main_UpdateLoopInfo)(int ignoremask);
-
-double (*TimeMap2_timeToBeats)(void *proj, double tpos, int *measures, int *cml, double *fullbeats, int *cdenom);
-double (*Track_GetPeakInfo)(MediaTrack *tr, int chidx);
-void (*mkvolpanstr)(char *str, double vol, double pan);
-void (*mkvolstr)(char *str, double vol);
-void (*mkpanstr)(char *str, double pan);
-
-bool (*GetTrackUIVolPan)(MediaTrack *tr, double *vol, double *pan);
-
-
-
-void (*MoveEditCursor)(double adjamt, bool dosel);
-void (*adjustZoom)(double amt, int forceset, bool doupd, int centermode); // forceset=0, doupd=true, centermode=-1 for default
-double (*GetHZoomLevel)(); // returns pixels/second
-
-
-int (*TrackFX_GetCount)(MediaTrack *tr);
-int (*TrackFX_GetNumParams)(MediaTrack *tr, int fx);
-bool (*TrackFX_GetFXName)(MediaTrack *tr, int fx, char *buf, int buflen);
-double (*TrackFX_GetParam)(MediaTrack *tr, int fx, int param, double *minval, double *maxval);
-bool (*TrackFX_SetParam)(MediaTrack *tr, int fx, int param, double val);
-bool (*TrackFX_GetParamName)(MediaTrack *tr, int fx, int param, char *buf, int buflen);
-bool (*TrackFX_FormatParamValue)(MediaTrack *tr, int fx, int param, double val, char *buf, int buflen);
-GUID *(*GetTrackGUID)(MediaTrack *tr);
-
-
-int *g_config_csurf_rate,*g_config_zoommode;
-
-int __g_projectconfig_timemode2, __g_projectconfig_timemode;
-int __g_projectconfig_measoffs;
-int __g_projectconfig_timeoffs; // double
-
 extern "C"
 {
 
 REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_HINSTANCE hInstance, reaper_plugin_info_t *rec)
 {
-  g_hInst=hInstance;
+  if (!rec || rec->caller_version != REAPER_PLUGIN_VERSION || !rec->GetFunc) return 0;
+  if (REAPERAPI_LoadAPI(rec->GetFunc) > 0) return 0;
 
-  if (!rec || rec->caller_version != REAPER_PLUGIN_VERSION || !rec->GetFunc)
-      return 0;
-
+  g_hInst = hInstance;
   g_hwnd = rec->hwnd_main;
-  int errcnt=0;
-#define IMPAPI(x) if (!((*((void **)&(x)) = (void *)rec->GetFunc(#x)))) errcnt++;
-
-  IMPAPI(DB2SLIDER)
-  IMPAPI(SLIDER2DB)
-  IMPAPI(GetNumMIDIInputs)
-  IMPAPI(GetNumMIDIOutputs)
-  IMPAPI(CreateMIDIInput)
-  IMPAPI(CreateMIDIOutput)
-  IMPAPI(GetMIDIOutputName)
-  IMPAPI(GetMIDIInputName)
-  IMPAPI(CSurf_TrackToID)
-  IMPAPI(CSurf_TrackFromID)
-  IMPAPI(CSurf_NumTracks)
-  IMPAPI(CSurf_SetTrackListChange)
-  IMPAPI(CSurf_SetSurfaceVolume)
-  IMPAPI(CSurf_SetSurfacePan)
-  IMPAPI(CSurf_SetSurfaceMute)
-  IMPAPI(CSurf_SetSurfaceSelected)
-  IMPAPI(CSurf_SetSurfaceSolo)
-  IMPAPI(CSurf_SetSurfaceRecArm)
-  IMPAPI(CSurf_GetTouchState)
-  IMPAPI(CSurf_SetAutoMode)
-  IMPAPI(CSurf_SetPlayState)
-  IMPAPI(CSurf_SetRepeatState)
-  IMPAPI(CSurf_OnVolumeChange)
-  IMPAPI(CSurf_OnPanChange)
-  IMPAPI(CSurf_OnMuteChange)
-  IMPAPI(CSurf_OnSelectedChange)
-  IMPAPI(CSurf_OnSoloChange)
-  IMPAPI(CSurf_OnFXChange)
-  IMPAPI(CSurf_OnRecArmChange)
-  IMPAPI(CSurf_OnPlay)
-  IMPAPI(CSurf_OnStop)
-  IMPAPI(CSurf_OnFwd)
-  IMPAPI(CSurf_OnRew)
-  IMPAPI(CSurf_OnRecord)
-  IMPAPI(CSurf_GoStart)
-  IMPAPI(CSurf_GoEnd)
-  IMPAPI(CSurf_OnArrow)
-  IMPAPI(CSurf_OnTrackSelection)
-  IMPAPI(CSurf_ResetAllCachedVolPanStates)
-  IMPAPI(CSurf_ScrubAmt)
-  IMPAPI(TrackList_UpdateAllExternalSurfaces)
-  IMPAPI(kbd_OnMidiEvent)
-  IMPAPI(GetMasterMuteSoloFlags)
-  IMPAPI(ClearAllRecArmed)
-  IMPAPI(SetTrackAutomationMode)
-  IMPAPI(GetTrackAutomationMode)
-  IMPAPI(SoloAllTracks)
-  IMPAPI(MuteAllTracks)
-  IMPAPI(BypassFxAllTracks)
-  IMPAPI(GetTrackInfo)
-  IMPAPI(SetTrackSelected)
-  IMPAPI(SetAutomationMode)
-  IMPAPI(UpdateTimeline)
-  IMPAPI(Main_UpdateLoopInfo)
-  IMPAPI(GetPlayState)
-  IMPAPI(GetPlayPosition)
-  IMPAPI(GetCursorPosition)
-  IMPAPI(format_timestr_pos)
-  IMPAPI(TimeMap2_timeToBeats)
-  IMPAPI(Track_GetPeakInfo)
-  IMPAPI(GetTrackUIVolPan)
-  IMPAPI(GetSetRepeat)
-  IMPAPI(mkvolpanstr)
-  IMPAPI(mkvolstr)
-  IMPAPI(mkpanstr)
-  IMPAPI(MoveEditCursor)
-  IMPAPI(adjustZoom)
-  IMPAPI(GetHZoomLevel)
-
-  IMPAPI(TrackFX_GetCount)
-  IMPAPI(TrackFX_GetNumParams)
-  IMPAPI(TrackFX_GetParam)
-  IMPAPI(TrackFX_SetParam)
-  IMPAPI(TrackFX_GetParamName)
-  IMPAPI(TrackFX_FormatParamValue)
-  IMPAPI(TrackFX_GetFXName)
-  
-  IMPAPI(GetTrackGUID)
-
-  IMPAPI(ShowConsoleMsg)
-  
-  void * (*get_config_var)(const char *name, int *szout); 
-  int (*projectconfig_var_getoffs)(const char *name, int *szout);
-  IMPAPI(get_config_var);
-  IMPAPI(projectconfig_var_getoffs);
-  IMPAPI(projectconfig_var_addr);
-  if (errcnt) return 0;
-
-  int sztmp;
-#define IMPVAR(x,nm) if (!((*(void **)&(x)) = get_config_var(nm,&sztmp)) || sztmp != sizeof(*x)) errcnt++;
-#define IMPVARP(x,nm,type) if (!((x) = projectconfig_var_getoffs(nm,&sztmp)) || sztmp != sizeof(type)) errcnt++;
-  IMPVAR(g_config_csurf_rate,"csurfrate")
-  IMPVAR(g_config_zoommode,"zoommode")
-
-  IMPVARP(__g_projectconfig_timemode,"projtimemode",int)
-  IMPVARP(__g_projectconfig_timemode2,"projtimemode2",int)
-  IMPVARP(__g_projectconfig_timeoffs,"projtimeoffs",double);
-  IMPVARP(__g_projectconfig_measoffs,"projmeasoffs",int);
-
-
-  if (errcnt) return 0;
 
   rec->Register("csurf",&csurf_quneo_reg);
 
   return 1;
-
 }
 
 };
