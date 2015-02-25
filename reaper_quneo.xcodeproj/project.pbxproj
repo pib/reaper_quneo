@@ -6,8 +6,22 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0A7571011A9D8B1500F88154 /* csurf_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7570FF1A9D8B1500F88154 /* csurf_main.cpp */; };
+		0A7571021A9D8B1500F88154 /* csurf_quneo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7571001A9D8B1500F88154 /* csurf_quneo.cpp */; };
+		0A7571431A9D91CE00F88154 /* swell-modstub.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7571421A9D91CE00F88154 /* swell-modstub.mm */; };
+		0A7571451A9D928D00F88154 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7571441A9D928D00F88154 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0A7570F81A9D852400F88154 /* reaper_quneo.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = reaper_quneo.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A7570FF1A9D8B1500F88154 /* csurf_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = csurf_main.cpp; path = reaper_quneo/csurf_main.cpp; sourceTree = "<group>"; };
+		0A7571001A9D8B1500F88154 /* csurf_quneo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = csurf_quneo.cpp; path = reaper_quneo/csurf_quneo.cpp; sourceTree = "<group>"; };
+		0A75713D1A9D8BB900F88154 /* reaper_plugin_functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reaper_plugin_functions.h; sourceTree = "<group>"; };
+		0A75713E1A9D8BB900F88154 /* reaper_plugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = reaper_plugin.h; sourceTree = "<group>"; };
+		0A75713F1A9D8BDB00F88154 /* csurf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = csurf.h; path = reaper_quneo/csurf.h; sourceTree = "<group>"; };
+		0A7571421A9D91CE00F88154 /* swell-modstub.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "swell-modstub.mm"; path = "../WDL/swell/swell-modstub.mm"; sourceTree = "<group>"; };
+		0A7571441A9D928D00F88154 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -15,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A7571451A9D928D00F88154 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24,6 +39,11 @@
 		0A7570EF1A9D852400F88154 = {
 			isa = PBXGroup;
 			children = (
+				0A7571441A9D928D00F88154 /* Cocoa.framework */,
+				0A7571421A9D91CE00F88154 /* swell-modstub.mm */,
+				0A7571411A9D8DCF00F88154 /* reaper_quneo */,
+				0A75713D1A9D8BB900F88154 /* reaper_plugin_functions.h */,
+				0A75713E1A9D8BB900F88154 /* reaper_plugin.h */,
 				0A7570F91A9D852400F88154 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -34,6 +54,16 @@
 				0A7570F81A9D852400F88154 /* reaper_quneo.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		0A7571411A9D8DCF00F88154 /* reaper_quneo */ = {
+			isa = PBXGroup;
+			children = (
+				0A7570FF1A9D8B1500F88154 /* csurf_main.cpp */,
+				0A7571001A9D8B1500F88154 /* csurf_quneo.cpp */,
+				0A75713F1A9D8BDB00F88154 /* csurf.h */,
+			);
+			name = reaper_quneo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -97,6 +127,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A7571021A9D8B1500F88154 /* csurf_quneo.cpp in Sources */,
+				0A7571431A9D91CE00F88154 /* swell-modstub.mm in Sources */,
+				0A7571011A9D8B1500F88154 /* csurf_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,6 +159,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
+					"SWELL_PROVIDED_BY_APP=1",
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -162,6 +196,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = " SWELL_PROVIDED_BY_APP=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -208,6 +243,7 @@
 				0A7570FE1A9D852400F88154 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

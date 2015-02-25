@@ -6,7 +6,6 @@
 ** License: LGPL.
 */
 
-
 #include "csurf.h"
 #include "../reaper_plugin_functions.h"
 

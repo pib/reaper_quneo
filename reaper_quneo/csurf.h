@@ -2,8 +2,8 @@
 #define _CSURF_H_
 
 #include "../reaper_plugin.h"
-#include "../WDL/db2val.h"
-#include "../WDL/wdlstring.h"
+#include "../../WDL/db2val.h"
+#include "../../WDL/wdlstring.h"
 #include <stdio.h>
 #include "resource.h"
 
